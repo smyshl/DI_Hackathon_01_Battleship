@@ -1,5 +1,3 @@
-
-
 class Board:
     def __init__(self, dim_x: int = 10, dim_y: int = 10) -> None:
         self.cells = []
@@ -60,15 +58,13 @@ class Cell:
             return " "
         
 
-class Ship: ...
-
-
 class Fleet:
     def __init__(self) -> None:
         pass
             
-
-    
+class Ship:
+    def __init__(self, start_row:int, start_col:int, size:int, direct:str) -> None:
+        pass    
 
 
 def main():
