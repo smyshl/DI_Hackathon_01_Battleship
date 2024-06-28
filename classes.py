@@ -46,7 +46,7 @@ class Board:
         '''Checks if the ship is on board's limits'''
         '''Checks if the ship don't toches another ships'''
 
-        if 0 <= ship.hull[0][0] <= self.row and 0 <= ship.hull[0][1]  and \
+        if 0 <= ship.hull[0][0] <= self.row and 0 <= ship.hull[0][1] <= self.col and \
            0 <= ship.hull[-1][0] <= self.row and 0 <= ship.hull[-1][1]<= self.col:  # check limits of the board
 
             for col in range(ship.hull[0][1], ship.hull[-1][1], 1):         # check another ships touching
