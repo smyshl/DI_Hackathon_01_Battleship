@@ -52,7 +52,7 @@ class Board:
             for col in range(ship.hull[0][1], ship.hull[-1][1], 1):         # check another ships touching
                 if 0 <= col <= self.col and (col not in [ship_col[1] for ship_col in ship.hull]):
                     for row in range(ship.hull[0][0], ship.hull[-1][0], 1):
-                        if 0 <= row <= self.row and (col not in [ship_row[0] for ship_row in ship.hull]):
+                        if 0 <= row <= self.row and (row not in [ship_row[0] for ship_row in ship.hull]):
                             if self.board[row, col].ship_inside == True:
                                 return False    
         else:
