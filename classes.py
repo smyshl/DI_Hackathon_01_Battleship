@@ -34,24 +34,32 @@ class Board:
         # self.cells = []
         self.col = col
         self.row = row
-        self.moves = []
+        self.moves = [[None for _ in range(col)] for _ in range(row)]
         self.moves_counter = 0
-        self.initial_placement()
+        self.ships = []
 
     def move_fixating(self, x: int, y: int):
         '''Record opponent's moves, who fires'''
         self.moves[y][x] = self.moves_counter
 
-    def initial_placement(self):
-        '''Makes initial placement of ship on the board'''
+    def check_ship_position(self, ship: object) -> bool:
         '''Checks if the ship is on board's limits'''
+        '''Checks if the ship don't toches another ships'''
 
-        # for y in range(self.dim_y):
-        #     self.cells[y] = []
-        #     self.moves[y] = []
-        #     for x in range(self.dim_x):
-        #         self.cells[y][x] = Cell(y, x)
-        #         self.moves[y][x] = []
+        if 0 <= ship.hull[0][0] <= self.row and 0 <= ship.hull[0][1]  and \
+           0 <= ship.hull[-1][0] <= self.row and 0 <= ship.hull[-1][1]<= self.col:  # check limits of the board
+
+            for col in range(ship.hull[0][1], ship.hull[-1][1], 1):         # check another ships touching
+                if 0 <= col <= self.col and (col not in [ship_col[1] for ship_col in ship.hull]):
+                    for row in range(ship.hull[0][0], ship.hull[-1][0], 1):
+                        if 0 <= row <= self.row and (col not in [ship_row[0] for ship_row in ship.hull]):
+                            if self.board[row, col].ship_inside == True:
+                                return False    
+        else:
+            return False
+        
+        self.ships.append(ship.hull)
+        return True
 
 
     def make_move(self, x: int, y: int):   # x and y in range from 0 to dim_x - 1 and dim_y - 1
