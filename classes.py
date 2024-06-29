@@ -3,8 +3,37 @@ from tools import coordinate_convert
 class Player:
     def __init__(self, name) -> None:
         self.name = name
-        self.board = Board()
-        self.fleet = Fleet(self.board)
+        # self.board = Board()
+        # self.fleet = Fleet(self.board)
+
+
+class Game:
+    def __init__(self, player_1: object, player_2: object) -> None:
+        self.players = [[player_1.name], [player_2.name]]
+
+        for player, in self.players:
+            player.append(Board())
+            player.append(Fleet())
+
+    def play(self):
+        index = 0
+        while self.players[0][2].live_units_amount > 0 and self.players[1][2].live_units_amount > 0:
+            if index == 0:      # player's 1 move
+                # get row, col coordinates of fire
+                self.players[index + 1][1].board.make_move(row, col)            # probably it should be function
+                if self.players[index + 1][1].board[row][col] == True:
+                    self.players[index + 1][2].live_units_amount -= 1
+                    # extra move
+            else:
+                # get row, col coordinates of fire
+                self.players[index - 1][1].board.make_move(row, col)
+                if self.players[index - 1][1].board[row][col] == True:
+                    self.players[index - 1][2].live_units_amount -= 1
+                    # extra move
+            if index == 0:
+                index = 1
+            else:
+                index = 0
 
         
 class Cell:
@@ -36,7 +65,11 @@ class Board:
         self.row = row
         self.moves = [[None for _ in range(col)] for _ in range(row)]
         self.moves_counter = 0
+
+        # self.initial_placement()
+
         self.ships = []
+
 
     def move_fixating(self, row: int, col: int):
         '''Record opponent's moves, who fires'''
