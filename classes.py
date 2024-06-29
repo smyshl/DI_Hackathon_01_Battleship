@@ -3,8 +3,37 @@ from tools import coordinate_convert
 class Player:
     def __init__(self, name) -> None:
         self.name = name
-        self.board = Board()
-        self.fleet = Fleet(self.board)
+        # self.board = Board()
+        # self.fleet = Fleet(self.board)
+
+
+class Game:
+    def __init__(self, player_1: object, player_2: object) -> None:
+        self.players = [[player_1.name], [player_2.name]]
+
+        for player, in self.players:
+            player.append(Board())
+            player.append(Fleet())
+
+    def play(self):
+        index = 0
+        while self.players[0][2].live_units_amount > 0 and self.players[1][2].live_units_amount > 0:
+            if index == 0:      # player's 1 move
+                # get row, col coordinates of fire
+                self.players[index + 1][1].board.make_move(row, col)            # probably it should be function
+                if self.players[index + 1][1].board[row][col] == True:
+                    self.players[index + 1][2].live_units_amount -= 1
+                    # extra move
+            else:
+                # get row, col coordinates of fire
+                self.players[index - 1][1].board.make_move(row, col)
+                if self.players[index - 1][1].board[row][col] == True:
+                    self.players[index - 1][2].live_units_amount -= 1
+                    # extra move
+            if index == 0:
+                index = 1
+            else:
+                index = 0
 
         
 class Cell:
@@ -34,30 +63,48 @@ class Board:
         # self.cells = []
         self.col = col
         self.row = row
-        self.moves = []
+        self.moves = [[None for _ in range(col)] for _ in range(row)]
         self.moves_counter = 0
-        self.initial_placement()
 
-    def move_fixating(self, x: int, y: int):
+        # self.initial_placement()
+
+        self.ships = []
+
+
+    def move_fixating(self, row: int, col: int):
         '''Record opponent's moves, who fires'''
-        self.moves[y][x] = self.moves_counter
+        self.moves[row][col] = self.moves_counter
 
-    def initial_placement(self):
-        '''Makes initial placement of ship on the board'''
+    def check_ship_position(self, ship: object) -> bool:
         '''Checks if the ship is on board's limits'''
+        '''Checks if the ship don't toches another ships'''
+        # ship_hull = ship
+        # print(ship_hull)
 
-        # for y in range(self.dim_y):
-        #     self.cells[y] = []
-        #     self.moves[y] = []
-        #     for x in range(self.dim_x):
-        #         self.cells[y][x] = Cell(y, x)
-        #         self.moves[y][x] = []
+        if 0 <= ship.hull[0][0] <= self.row -1 and 0 <= ship.hull[0][1] <= self.col -1 and \
+           0 <= ship.hull[-1][0] <= self.row -1 and 0 <= ship.hull[-1][1]<= self.col - 1:  # check limits of the board
+
+            for row in range(ship.hull[0][0] - 1, ship.hull[-1][0] + 2, 1):    # check another ships touching    
+                for col in range(ship.hull[0][1] - 1, ship.hull[-1][1] + 2, 1):
+                    print(row, col)
+                    if 0 <= row <= self.row -1 and 0 <= col <= self.col -1:
+                        if self.board[row][col].ship_inside == True:
+                            print(row, col)
+                            return False    
+        else:
+            return False
+        
+        self.ships.append(ship.hull)    # inserts ship into the board's ships list
+        for unit in ship.hull:
+            self.board[unit[0]][unit[1]].ship_inside = True     # marks cells with ship's unit inside
+
+        return True
 
 
-    def make_move(self, x: int, y: int):   # x and y in range from 0 to dim_x - 1 and dim_y - 1
+    def make_move(self, row: int, col: int):   # x and y in range from 0 to dim_x - 1 and dim_y - 1
         self.moves_counter += 1
-        self.cells[y][x].fired()
-        self.move_fixating(x, y)
+        self.cells[row][col].fired()
+        self.move_fixating(row, col)
 
     def push_to_db(self):
         ...
@@ -133,9 +180,6 @@ class Fleet:
             (start_row, start_col), direct = ask_ship_position(4)
             self.ships.append(Ship(4, start_row, start_col, direct))
 
-           
-def validate_position(start_x_poz:int, start_y_poz:int, direction:str, ):
-    ...
 
 
 def ask_ship_position(ship_size: int) -> tuple:  # it seems it should be tuple :)
@@ -149,7 +193,21 @@ def ask_ship_position(ship_size: int) -> tuple:  # it seems it should be tuple :
 
 
 def main():
+
     fleet_1 = Fleet()
+
+    # board_1 = Board()
+    # board_1.board[2][2].fired()
+    # print(board_1.board[2][2])
+
+    # ship_1 = [(6, 5), (7, 5), (8, 5), (9, 5)]
+    # for unit in ship_1:
+    #     board_1.board[unit[0]][unit[1]].ship_inside = True
+    #     # print(board_1.board[unit[0]][unit[1]], board_1.board[unit[0]][unit[1]].ship_inside)
+    # ship_2 = [(5, 1), (5, 2), (5, 3), (5, 4)]
+
+    # print(board_1.check_ship_position(ship_2))
+
 
 
 if __name__ == "__main__":
