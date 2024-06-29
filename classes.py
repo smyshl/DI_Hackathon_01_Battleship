@@ -100,8 +100,7 @@ class Ship:
 
 class Fleet:
 
-    def __init__(self, 
-                 board,
+    def __init__(self,
                  one_unit_ship_amount: int = 4, 
                  two_unit_ship_amount: int = 3,
                  three_unit_ship_amount: int = 2,
@@ -113,22 +112,26 @@ class Fleet:
         self.two_unit_ship_amount = two_unit_ship_amount
         self.three_unit_ship_amount = three_unit_ship_amount
         self.four_unit_ship_amount = four_unit_ship_amount
-        self.board = board
+        self.create_ships()
 
 
     def create_ships(self):
 
         for _ in range(self.one_unit_ship_amount):       #  Not the best solution, but I haven't figured out how
-            self.ships.append(Ship(1))                   #  to create list .... can't say it in english :)
+            (start_row, start_col), direct = ask_ship_position(1)
+            self.ships.append(Ship(1, start_row, start_col, direct))                   #  to create list .... can't say it in english :))
                                                          #
         for _ in range(self.two_unit_ship_amount):
-            self.ships.append(Ship(2))
+            (start_row, start_col), direct = ask_ship_position(2)
+            self.ships.append(Ship(2, start_row, start_col, direct))
 
         for _ in range(self.three_unit_ship_amount):
-            self.ships.append(Ship(3))
+            (start_row, start_col), direct = ask_ship_position(3)
+            self.ships.append(Ship(3, start_row, start_col, direct))
 
         for _ in range(self.four_unit_ship_amount):
-            self.ships.append(Ship(4))
+            (start_row, start_col), direct = ask_ship_position(4)
+            self.ships.append(Ship(4, start_row, start_col, direct))
 
            
 def validate_position(start_x_poz:int, start_y_poz:int, direction:str, ):
@@ -136,17 +139,17 @@ def validate_position(start_x_poz:int, start_y_poz:int, direction:str, ):
 
 
 def ask_ship_position(ship_size: int) -> tuple:  # it seems it should be tuple :)
-    ship_directions = ["N", "E", "S", "W"]
+    ship_directions = {"N": "up", "E": "right", "S": "down", "W": "left"}
     ship_direction_choice = None
     user_input = input(f"Please enter starting position (a1 or b5 etc.) of a ship which size is {ship_size}: ")
     while ship_direction_choice not in ship_directions:
         ship_direction_choice = input(f"Please enter direction (N, E, S, W) of a ship which size is {ship_size}: ").capitalize()
-    return coordinate_convert(user_input), ship_direction_choice
+    return coordinate_convert(user_input), ship_directions[ship_direction_choice]
 
 
 
 def main():
-    ...
+    fleet_1 = Fleet()
 
 
 if __name__ == "__main__":
