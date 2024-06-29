@@ -1,0 +1,66 @@
+class Ship:
+    MAX_HULL_SIZE = 4
+
+    def __init__(self, size: int, start_row: int, start_col: int, direct: str = None) -> None:
+        self.size = size
+        self.hull = Ship.get_hull(size, start_row, start_col, direct)
+        self.is_killed = False
+
+class Cell:
+    def __init__(self, row: int, col: int) -> None:
+        self.moved = False
+        self.visible = True
+        self.ship_inside = False
+        self.is_deck = False
+        self.row = row
+        self.col = col
+
+    def __str___   - display cell content
+
+class Board:
+
+    def __init__(self, row: int = 10, col: int = 10) -> None:
+        self.board = [[Cell(row, col) for _ in range(col)] for _ in range(row)]
+        self.col = col
+        self.row = row
+        self.moves = []
+        self.moves_counter = 0
+
+    def check_ship_position(self, ship: object) -> bool:
+
+    def make_move(self, row: int, col: int):
+
+class Fleet:
+    def __init__(self,          ????????????
+                 board,
+                 one_unit_ship_amount: int = 4, 
+                 two_unit_ship_amount: int = 3,
+                 three_unit_ship_amount: int = 2,
+                 four_unit_ship_amount: int = 1,
+                 ) -> None:
+        self.live_units_amount = one_unit_ship_amount + 2* two_unit_ship_amount + 3 * three_unit_ship_amount + 4 * four_unit_ship_amount
+        self.ships = []
+        self.one_unit_ship_amount = one_unit_ship_amount 
+        self.two_unit_ship_amount = two_unit_ship_amount
+        self.three_unit_ship_amount = three_unit_ship_amount
+        self.four_unit_ship_amount = four_unit_ship_amount
+        self.board = board
+
+    def __init__(self, ships:dict = {1:4, 2:3, 3:2, 4:1}) , where key - number of deck, value - number of ships 
+            player input ship's coordinate to create ships
+            self.ships = [ship, ship, ....]
+
+    @property
+    def  is_destroyed(self) -> bool
+        check all ships
+
+    class Player:
+    def __init__(self, name, board_rows=10, board_cols=10, ships={1:4, 2:3, 3:2, 4:1}) -> None:
+        self.name = name
+        self.board = Board(board_rows, board_cols)
+        self.fleet = Fleet(ships)
+
+    def fire(self) -> bool:   True - hit the ship, False - miss
+        input cell coordinate
+        call board.make_move
+

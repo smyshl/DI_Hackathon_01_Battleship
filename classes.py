@@ -35,12 +35,48 @@ class Game:
             else:
                 index = 0
 
+class Ship:
+    MAX_HULL_SIZE = 4
+
+    @classmethod
+    def get_hull(cls, size: int, start_row: int, start_col: int, direct: str) -> list:
+        d_row = 0
+        d_col = 0
+        if 0 < size <= Ship.MAX_HULL_SIZE:
+            match direct:
+                case "up":
+                    d_row = -1
+                case "down":
+                    d_row = 1
+                case "left":
+                    d_col = -1
+                case "right":
+                    d_col = 1
+                case _:
+                    size = 1
+        else:
+            raise ValueError("Ship size out of range.")
+        hull = []
+        row = start_row
+        col = start_col
+        for _ in range(size):
+            hull.append((row, col),)
+            row += d_row
+            col += d_col
+        return hull
+
+    def __init__(self, size: int, start_row: int, start_col: int, direct: str = None) -> None:
+        self.size = size
+        self.hull = Ship.get_hull(size, start_row, start_col, direct)
+        self.is_killed = False
+
         
 class Cell:
     def __init__(self, row: int, col: int) -> None:
         self.moved = False
-        self.visible = False
+        self.visible = True
         self.ship_inside = False
+        self.is_deck = False
         self.row = row
         self.col = col
 
@@ -49,15 +85,22 @@ class Cell:
         self.visible = True
 
     def __str__(self):
-        if self.moved:
-            if self.ship_inside:
-                return "X"
+        if self.visible:
+            if self.moved:
+                if self.ship_inside:
+                    return "X"
+                else:
+                    return "•"
             else:
-                return "•"
+                if self.ship_inside:
+                    return "S"
+                else:
+                    return " "
         else:
             return " "
 
 class Board:
+
     def __init__(self, row: int = 10, col: int = 10) -> None:
         self.board = [[Cell(row, col) for _ in range(col)] for _ in range(row)]
         # self.cells = []
@@ -109,40 +152,29 @@ class Board:
     def push_to_db(self):
         ...
 
-class Ship:
-    MAX_HULL_SIZE = 4
+    def check_ship_position(self, ship: object) -> bool:
+        '''Checks if the ship is on board's limits'''
+        '''Checks if the ship don't toches another ships'''
+        # ship_hull = ship
+        # print(ship_hull)
 
-    @classmethod
-    def get_hull(size: int, start_row: int, start_col: int, direct: str) -> list:
-        d_row = 0
-        d_col = 0
-        if 0 < size <= Ship.MAX_HULL_SIZE:
-            match direct:
-                case "up":
-                    d_row = -1
-                case "down":
-                    d_row = 1
-                case "left":
-                    d_col = -1
-                case "right":
-                    d_col = 1
-                case _:
-                    size = 1
+        if 0 <= ship.hull[0][0] <= self.row -1 and 0 <= ship.hull[0][1] <= self.col -1 and \
+           0 <= ship.hull[-1][0] <= self.row -1 and 0 <= ship.hull[-1][1]<= self.col - 1:  # check limits of the board
+
+            for row in range(ship.hull[0][0] - 1, ship.hull[-1][0] + 2, 1):    # check another ships touching    
+                for col in range(ship.hull[0][1] - 1, ship.hull[-1][1] + 2, 1):
+                    print(row, col)
+                    if 0 <= row <= self.row -1 and 0 <= col <= self.col -1:
+                        if self.board[row][col].ship_inside == True:
+                            print(row, col)
+                            return False    
         else:
-            raise ValueError("Ship size out of range.")
-        hull = []
-        row = start_row
-        col = start_col
-        for _ in range(size):
-            hull.append(row, col)
-            row += d_row
-            col += d_col
-        return hull
+            return False
 
-    def __init__(self, size: int, start_row: int, start_col: int, direct: str = None) -> None:
-        self.size = size
-        self.hull = Ship.get_hull(size, start_row, start_col, direct)
-        self.is_killed = False
+        # self.ships.append(ship.hull)    # inserts ship into the board's ships list
+        for unit in ship.hull:
+            self.board[unit[0]][unit[1]].ship_inside = True     # marks cells with ship's unit inside
+        return True
 
 
 class Fleet:
