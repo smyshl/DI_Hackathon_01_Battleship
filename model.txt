@@ -64,3 +64,7 @@ class Fleet:
         input cell coordinate
         call board.make_move
 
+
+
+MAIN
+

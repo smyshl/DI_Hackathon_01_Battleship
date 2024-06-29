@@ -45,3 +45,39 @@ class Board:
         self.fix_ship_in_board()
         return True
 
+class Fleet:
+
+    def __init__(self,
+                 board: Board,
+                 one_unit_ship_amount: int = 4, 
+                 two_unit_ship_amount: int = 3,
+                 three_unit_ship_amount: int = 2,
+                 four_unit_ship_amount: int = 1,
+                 ) -> None:
+        self.board = board
+        self.live_units_amount = one_unit_ship_amount + 2* two_unit_ship_amount + 3 * three_unit_ship_amount + 4 * four_unit_ship_amount
+        self.ships = []
+        self.one_unit_ship_amount = one_unit_ship_amount 
+        self.two_unit_ship_amount = two_unit_ship_amount
+        self.three_unit_ship_amount = three_unit_ship_amount
+        self.four_unit_ship_amount = four_unit_ship_amount
+        self.create_ships()
+
+
+    def create_ships(self):
+
+        for _ in range(self.one_unit_ship_amount):       #  Not the best solution, but I haven't figured out how
+            (start_row, start_col), direct = ask_ship_position(1)
+            self.ships.append(Ship(1, start_row, start_col, direct))                 #  to create list .... can't say it in english :))
+
+        for _ in range(self.two_unit_ship_amount):
+            (start_row, start_col), direct = ask_ship_position(2)
+            self.ships.append(Ship(2, start_row, start_col, direct))
+
+        for _ in range(self.three_unit_ship_amount):
+            (start_row, start_col), direct = ask_ship_position(3)
+            self.ships.append(Ship(3, start_row, start_col, direct))
+
+        for _ in range(self.four_unit_ship_amount):
+            (start_row, start_col), direct = ask_ship_position(4)
+            self.ships.append(Ship(4, start_row, start_col, direct))
