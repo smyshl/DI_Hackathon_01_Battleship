@@ -8,5 +8,12 @@ def coordinate_convert(coord_str: str) -> tuple:
             return (input_transform_map[coord_str[0]], int(coord_str[1:]) - 1)
     return ()
 
+
 if __name__ == "__main__":  
-    print(coordinate_convert(input("Your move: ")))
+    # print(coordinate_convert(input("Your move: ")))
+
+    ship = [(0,5), (0,6), (0,7)]
+    for deck in ship:
+        r, c = deck
+        print(r, c)
+
