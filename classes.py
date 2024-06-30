@@ -7,12 +7,13 @@ class Player:
         self.name = name
         self.board = Board()
         self.fleet = Fleet(self.board, {1: 1, 2: 1})
+        self.moves_counter = 1
 
     def make_move(self, other_players):
-        print(other_players)
+
         for other_player in other_players:
             display_2_boards(self.board.board, other_player.board.board, self.name, other_player.name)    
-            print("Move #", self.board.moves_counter)
+            # print("Move #", self.moves_counter)
             print(self.name, "attacks", other_player.name)
             row, col = coordinate_convert(input("Please input coordinates of fire (ex. a1): "))
             # print(row, col, other_player.name)
@@ -20,6 +21,9 @@ class Player:
             if other_player.board.board[row][col] == True:
                 other_player.fleet.live_units_amount -= 1
             display_2_boards(self.board.board, other_player.board.board, self.name, other_player.name)
+            if other_player.fleet.is_destroyed:
+                print(other_player.name, "LOSE!")
+                return
             input("Press enter for the next move")
 
 
@@ -29,9 +33,10 @@ class Game:
 
     def play(self):
 
-        last_fleet_amounts = [self.players[_].fleet.live_units_amount for _ in range(len(self.players))]
+        last_fleet_amounts = [player.fleet.live_units_amount for player in self.players]
+        print("last fleet amount", last_fleet_amounts)
 
-        while not 0 in last_fleet_amounts:
+        while not (True in [player.fleet.is_destroyed for player in self.players]):
 
             for index in range(len(self.players)):
 
@@ -40,8 +45,11 @@ class Game:
 
                 who_moves.make_move(other_players)
 
-                last_fleet_amounts = [self.players[_].fleet.live_units_amount for _ in range(len(self.players))]
+                if True in [player.fleet.is_destroyed for player in self.players]:
+                    break
 
+                # last_fleet_amounts = [player.fleet.live_units_amount for player in self.players]
+                # print("last fleet amount", last_fleet_amounts)
             # if index == 0:      # player's 1 move
             #     # get row, col coordinates of fire
             #     # probably it should be function
@@ -211,6 +219,7 @@ class Fleet:
         self.board = board
         self.ships_types = ships_types
         self.live_units_amount = sum(ships_types.values())
+        print(self.live_units_amount)
         self.ships = []
         self.create_ships()
 
