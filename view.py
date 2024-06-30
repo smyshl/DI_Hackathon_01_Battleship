@@ -24,7 +24,7 @@ class style():
 # board = [["x" for _ in range(10)] for _ in range(10)]
 
 
-def display_board(board: list) -> None:
+def display_board(board: list, player_name:str="player 1") -> None:
     """display the board (GUI :-). 
     board = list[list[Cell]]."""
 
@@ -32,7 +32,7 @@ def display_board(board: list) -> None:
     cols_num = len(board[0])
     print(style.BG_cayn)
     print(style.BOLD)
-    print("      ", "self_name")
+    print("      ", player_name)
     # print header
     head = "    " + "".join([f"  {i+1} " for i in range(cols_num)])
     print(head)
@@ -49,7 +49,7 @@ def display_board(board: list) -> None:
     print(style.RESET)
 
 
-def display_2_boards(board_l: list, board_r: list) -> None:
+def display_2_boards(board_l: list, board_r: list, player_1_name:str="player 1", player_2_name:str="player 2") -> None:
     """display the 2 boards (GUI :-) left board >= right board. 
     board = list[list[Cell]]."""
 
@@ -60,8 +60,8 @@ def display_2_boards(board_l: list, board_r: list) -> None:
     cols_num_r = len(board_r[0])
     print(style.BG_cayn)
     print(style.BOLD)
-    print("      ", "self_name", " " * (cols_num_l*4-10),
-          interval, " ", "enemy_name", " " * (cols_num_r*4-10))
+    print("      ", player_1_name, " " * (cols_num_l*4-10),
+          interval, " ", player_2_name, " " * (cols_num_r*4-10))
 
     # print header
     head = "    " + "".join([f"  {i+1} " for i in range(cols_num_l)])
@@ -85,7 +85,7 @@ def display_2_boards(board_l: list, board_r: list) -> None:
         data_row = data_row_l + interval + chr(97+row) + " "  # full data row
         if row in range(rows_num_r):
             for column in range(cols_num_r):
-                data_row += f"| {board_r[row][column]} "
+                data_row += f"| {repr(board_r[row][column])} "
             data_row += "|"
         if row < rows_num_r:
             print(grid_row)

@@ -1,4 +1,5 @@
 import psycopg2
+
 import random
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 

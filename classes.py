@@ -5,39 +5,68 @@ from view import display_board, display_2_boards
 class Player:
     def __init__(self, name) -> None:
         self.name = name
-        # self.board = Board()
-        # self.fleet = Fleet(self.board)
+        self.board = Board()
+        self.fleet = Fleet(self.board, {1: 1, 2: 1})
+        self.moves_counter = 1
+
+    def make_move(self, other_players):
+
+        for other_player in other_players:
+            display_2_boards(self.board.board, other_player.board.board, self.name, other_player.name)    
+            # print("Move #", self.moves_counter)
+            print(self.name, "attacks", other_player.name)
+            row, col = coordinate_convert(input("Please input coordinates of fire (ex. a1): "))
+            # print(row, col, other_player.name)
+            other_player.board.make_move(row, col)
+            if other_player.board.board[row][col] == True:
+                other_player.fleet.live_units_amount -= 1
+            display_2_boards(self.board.board, other_player.board.board, self.name, other_player.name)
+            if other_player.fleet.is_destroyed:
+                print(other_player.name, "LOSE!")
+                return
+            input("Press enter for the next move")
 
 
 class Game:
     def __init__(self, player_1: object, player_2: object) -> None:
-        self.players = [[player_1.name], [player_2.name]]
-
-        for player in self.players:
-            b = Board()
-            player.append(b)
-            player.append(Fleet(b))
+        self.players = [player_1, player_2]
 
     def play(self):
-        index = 0
-        while self.players[0][2].live_units_amount > 0 and self.players[1][2].live_units_amount > 0:
-            if index == 0:      # player's 1 move
-                # get row, col coordinates of fire
-                # probably it should be function
-                self.players[index + 1][1].board.make_move(row, col)
-                if self.players[index + 1][1].board[row][col] == True:
-                    self.players[index + 1][2].live_units_amount -= 1
-                    # extra move
-            else:
-                # get row, col coordinates of fire
-                self.players[index - 1][1].board.make_move(row, col)
-                if self.players[index - 1][1].board[row][col] == True:
-                    self.players[index - 1][2].live_units_amount -= 1
-                    # extra move
-            if index == 0:
-                index = 1
-            else:
-                index = 0
+
+        last_fleet_amounts = [player.fleet.live_units_amount for player in self.players]
+        print("last fleet amount", last_fleet_amounts)
+
+        while not (True in [player.fleet.is_destroyed for player in self.players]):
+
+            for index in range(len(self.players)):
+
+                who_moves = self.players[index]
+                other_players = [self.players[_] for _ in range(len(self.players)) if _ != index]
+
+                who_moves.make_move(other_players)
+
+                if True in [player.fleet.is_destroyed for player in self.players]:
+                    break
+
+                # last_fleet_amounts = [player.fleet.live_units_amount for player in self.players]
+                # print("last fleet amount", last_fleet_amounts)
+            # if index == 0:      # player's 1 move
+            #     # get row, col coordinates of fire
+            #     # probably it should be function
+            #     self.players[index + 1][1].board.make_move(row, col)
+            #     if self.players[index + 1][1].board[row][col] == True:
+            #         self.players[index + 1][2].live_units_amount -= 1
+            #         # extra move
+            # else:
+            #     # get row, col coordinates of fire
+            #     self.players[index - 1][1].board.make_move(row, col)
+            #     if self.players[index - 1][1].board[row][col] == True:
+            #         self.players[index - 1][2].live_units_amount -= 1
+            #         # extra move
+            # if index == 0:
+            #     index = 1
+            # else:
+            #     index = 0
 
 
 class Ship:
@@ -107,20 +136,26 @@ class Cell:
                 return "Ship is damaged."
         return "Miss :-)"
 
-    def __str__(self):
-        if self.visible:
+    def __str__(self):      # view left board (myself)
+        if self.moved:
+            if self.ship_inside:
+                return "X"
+            else:
+                return "•"
+        else:
+            if self.ship_inside:
+                return "O"
+            else:
+                return " "
+
+    def __repr__(self):     # view right board (enemy)
             if self.moved:
                 if self.ship_inside:
                     return "X"
                 else:
                     return "•"
             else:
-                if self.ship_inside:
-                    return "S"
-                else:
-                    return " "
-        else:
-            return " "
+                return " "
 
 
 class Board:
@@ -171,7 +206,7 @@ class Board:
     # x and y in range from 0 to dim_x - 1 and dim_y - 1
     def make_move(self, row: int, col: int):
         self.moves_counter += 1
-        self.cells[row][col].fired()
+        print(self.board[row][col].fired())
         self.move_fixating(row, col)
 
     def push_to_db(self):
@@ -184,6 +219,7 @@ class Fleet:
         self.board = board
         self.ships_types = ships_types
         self.live_units_amount = sum(ships_types.values())
+        print(self.live_units_amount)
         self.ships = []
         self.create_ships()
 
@@ -237,7 +273,11 @@ def ask_ship_position(ship_size: int) -> tuple:  # it seems it should be tuple :
 
 def main():
 
-    fleet_1 = Fleet()
+    p1 = Player("p1")
+    p2 = Player("p2")
+    game = Game(p1, p2)
+
+    game.play()
 
     # board_1 = Board()
     # board_1.board[2][2].fired()
