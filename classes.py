@@ -107,20 +107,26 @@ class Cell:
                 return "Ship is damaged."
         return "Miss :-)"
 
-    def __str__(self):
-        if self.visible:
+    def __str__(self):      # view left board (myself)
+        if self.moved:
+            if self.ship_inside:
+                return "X"
+            else:
+                return "•"
+        else:
+            if self.ship_inside:
+                return "O"
+            else:
+                return " "
+
+    def __repr__(self):     # view right board (enemy)
             if self.moved:
                 if self.ship_inside:
                     return "X"
                 else:
                     return "•"
             else:
-                if self.ship_inside:
-                    return "S"
-                else:
-                    return " "
-        else:
-            return " "
+                return " "
 
 
 class Board:

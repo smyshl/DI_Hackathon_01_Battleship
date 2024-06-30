@@ -4,25 +4,15 @@ from classes import Ship, Board, Fleet
 
 def main():
     game_title()
-    b_self = Board()
-    fleet_self = Fleet(b_self, {3:1, 4:1})
-    print(fleet_self)
-    # b_enemy = Board()
-    # # b_self.board[3][5].moved = True
-    # # b_self.board[7][8].moved = True
-    # # b_self.board[0][0].ship_inside = True
-    # # b_enemy.board[1][4].moved = True
-
-    # ship = Ship(3, 0, 7, "right")
-    # print(b_self.check_ship_position(ship))
-    # # print(b_self.place_ship(ship))
-    # ship = Ship(2, 2, 6, "down")
-    # print(b_self.check_ship_position(ship))
-
-    # display_2_boards(b_self.board, b_enemy.board)
-
+    bl = Board()
+    br = Board()
+    fleet_1 = Fleet(br, {3:1})
+    # fleet_2 = Fleet(br, {3:1})
+    print(fleet_1)
+    # print(fleet_2)
+    print(br.board[0][2].fired())
+    display_2_boards(br.board, br.board)
 
 
 if __name__ == "__main__":
     main()
-
