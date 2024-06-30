@@ -41,7 +41,7 @@ def display_board(board: list, player_name:str="player 1") -> None:
     for row in range(rows_num):
         data_row = "  " + chr(97+row) + " "     # left board data row
         for column in range(cols_num):
-            data_row += f"| {repr(board[row][column])} "
+            data_row += f"| {board[row][column]} "
         data_row += "|"
         print(grid_row)
         print(data_row)

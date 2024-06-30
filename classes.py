@@ -6,15 +6,21 @@ class Player:
     def __init__(self, name) -> None:
         self.name = name
         self.board = Board()
-        self.fleet = Fleet(self.board, {1: 2, 2: 2})
+        self.fleet = Fleet(self.board, {1: 1, 2: 1})
 
     def make_move(self, other_players):
+        print(other_players)
         for other_player in other_players:
+            display_2_boards(self.board.board, other_player.board.board, self.name, other_player.name)    
+            print("Move #", self.board.moves_counter)
             print(self.name, "attacks", other_player.name)
             row, col = coordinate_convert(input("Please input coordinates of fire (ex. a1): "))
+            # print(row, col, other_player.name)
             other_player.board.make_move(row, col)
-            if other_player.board[row][col] == True:
+            if other_player.board.board[row][col] == True:
                 other_player.fleet.live_units_amount -= 1
+            display_2_boards(self.board.board, other_player.board.board, self.name, other_player.name)
+            input("Press enter for the next move")
 
 
 class Game:
@@ -23,15 +29,18 @@ class Game:
 
     def play(self):
 
-        for index in range(len(self.players)):
+        last_fleet_amounts = [self.players[_].fleet.live_units_amount for _ in range(len(self.players))]
 
-            who_moves = self.players[index]
-            other_players = [self.players[_] for _ in range(len(self.players)) if _ != index]
-            last_fleet_amounts = [self.players[_].fleet.live_units_amount for _ in range(len(self.players))]
+        while not 0 in last_fleet_amounts:
 
-            while not 0 in last_fleet_amounts > 0:
+            for index in range(len(self.players)):
+
+                who_moves = self.players[index]
+                other_players = [self.players[_] for _ in range(len(self.players)) if _ != index]
 
                 who_moves.make_move(other_players)
+
+                last_fleet_amounts = [self.players[_].fleet.live_units_amount for _ in range(len(self.players))]
 
             # if index == 0:      # player's 1 move
             #     # get row, col coordinates of fire
@@ -189,7 +198,7 @@ class Board:
     # x and y in range from 0 to dim_x - 1 and dim_y - 1
     def make_move(self, row: int, col: int):
         self.moves_counter += 1
-        self.board[row][col].fired()
+        print(self.board[row][col].fired())
         self.move_fixating(row, col)
 
     def push_to_db(self):
