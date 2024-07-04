@@ -3,10 +3,10 @@ import psycopg2
 import random
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-DBNAME = 'battleship'
-USER = 'postgres'
-PASSWORD = 'postgres'
-HOST = 'localhost'
+DBNAME = '-'
+USER = '-'
+PASSWORD = '-'
+HOST = '-'
 PORT = '5432'
 TABLE = 'fleets'
 
